@@ -41,9 +41,17 @@ function LoginPage() {
     setApiError('')
     try {
       const res = await loginUser(formData)
-      const { token, user } = res.data
+      const token = res.data?.data?.token || res.data?.token
+      const user = res.data?.data?.user || res.data?.user
+
+      if (!token) {
+        throw new Error('No authentication token received from server.')
+      }
+
       localStorage.setItem('token', token)
-      localStorage.setItem('user', JSON.stringify(user))
+      if (user) {
+        localStorage.setItem('user', JSON.stringify(user))
+      }
       navigate('/dashboard')
     } catch (err) {
       const msg =

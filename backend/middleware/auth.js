@@ -17,7 +17,8 @@ const User = require('../models/User');
 const auth = async (req, res, next) => {
   try {
     // 1. Extract the Authorization header
-    const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+    const authHeader =
+      req.headers['authorization'] || req.headers['Authorization'] || '';
 
     if (!authHeader) {
       return res.status(401).json({
@@ -26,22 +27,16 @@ const auth = async (req, res, next) => {
       });
     }
 
-    // 2. Expect format: "Bearer <token>"
-    if (!authHeader.startsWith('Bearer ')) {
+    // 2. Expect format: "Bearer <token>" (case-insensitive)
+    const match = authHeader.match(/^Bearer\s+(.+)$/i);
+    if (!match) {
       return res.status(401).json({
         success: false,
         message: 'Access denied. Token must use Bearer scheme.',
       });
     }
 
-    const token = authHeader.split(' ')[1];
-
-    if (!token || token.trim() === '') {
-      return res.status(401).json({
-        success: false,
-        message: 'Access denied. Token is missing.',
-      });
-    }
+    const token = match[1].trim();
 
     // 3. Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);

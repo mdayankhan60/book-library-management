@@ -1,0 +1,63 @@
+{
+  "users": [
+    {
+      "_id": "c06feec8be2bac1a10b2792e",
+      "name": "Mohammed Ayan Khan",
+      "email": "ayankhanmohammed100@gmail.com",
+      "password": "$2a$12$SUkcTWtScsFLh0TDfQdape/vZ6FMLsZU1gaQfrO3bD3W3Pt3dP2l6",
+      "createdAt": "2026-09-26T16:43:49.864Z"
+    }
+  ],
+  "books": [
+    {
+      "_id": "ff4ad897f86297fc02a163d1",
+      "title": "Introduction to Algorithms",
+      "author": "Thomas H. Cormen",
+      "category": "Technology",
+      "status": "Available",
+      "createdBy": "c06feec8be2bac1a10b2792e",
+      "createdAt": "2026-09-26T16:45:31.879Z",
+      "updatedAt": "2026-09-26T16:45:31.879Z"
+    },
+    {
+      "_id": "65f1a2b3c4d5e6f7a8b9c001",
+      "title": "Clean Code: A Handbook of Agile Software Craftsmanship",
+      "author": "Robert C. Martin",
+      "category": "Technology",
+      "status": "Available",
+      "createdBy": "all",
+      "createdAt": "2026-09-21T16:42:12.062Z",
+      "updatedAt": "2026-09-21T16:42:12.062Z"
+    },
+    {
+      "_id": "65f1a2b3c4d5e6f7a8b9c002",
+      "title": "The Pragmatic Programmer",
+      "author": "Andrew Hunt & David Thomas",
+      "category": "Technology",
+      "status": "Available",
+      "createdBy": "all",
+      "createdAt": "2026-09-23T16:42:12.062Z",
+      "updatedAt": "2026-09-23T16:42:12.062Z"
+    },
+    {
+      "_id": "65f1a2b3c4d5e6f7a8b9c003",
+      "title": "A Brief History of Time",
+      "author": "Stephen Hawking",
+      "category": "Science",
+      "status": "Issued",
+      "createdBy": "all",
+      "createdAt": "2026-09-24T16:42:12.062Z",
+      "updatedAt": "2026-09-24T16:42:12.062Z"
+    },
+    {
+      "_id": "65f1a2b3c4d5e6f7a8b9c004",
+      "title": "Sapiens: A Brief History of Humankind",
+      "author": "Yuval Noah Harari",
+      "category": "History",
+      "status": "Available",
+      "createdBy": "all",
+      "createdAt": "2026-09-25T16:42:12.062Z",
+      "updatedAt": "2026-09-25T16:42:12.062Z"
+    }
+  ]
+}

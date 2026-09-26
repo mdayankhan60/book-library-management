@@ -31,7 +31,8 @@ function BooksPage() {
     setError('')
     try {
       const res = await getBooks()
-      setBooks(res.data.books || res.data || [])
+      const booksList = res.data?.data?.books || res.data?.books || res.data?.data || []
+      setBooks(Array.isArray(booksList) ? booksList : [])
     } catch {
       setError('Failed to load books. Please try again.')
     } finally {

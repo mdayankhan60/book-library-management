@@ -48,4 +48,23 @@ userSchema.methods.toSafeObject = function () {
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+let localStore;
+try {
+  localStore = require('../services/localStore');
+} catch (e) {
+  // Ignore if not present
+}
+
+const UserProxy = new Proxy(User, {
+  get(target, prop) {
+    if (mongoose.connection && mongoose.connection.readyState === 1) {
+      return target[prop];
+    }
+    if (localStore && localStore.localUser && prop in localStore.localUser) {
+      return localStore.localUser[prop];
+    }
+    return target[prop];
+  },
+});
+
+module.exports = UserProxy;

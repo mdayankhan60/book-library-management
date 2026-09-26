@@ -23,7 +23,12 @@ function EditBookPage() {
       setFetchError('')
       try {
         const res = await getBook(id)
-        setBookData(res.data.book || res.data)
+        const book =
+          res.data?.data?.book ||
+          res.data?.data ||
+          res.data?.book ||
+          res.data
+        setBookData(book)
       } catch {
         setFetchError('Failed to load book details. Please try again.')
       } finally {

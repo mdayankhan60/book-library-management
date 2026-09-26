@@ -68,4 +68,23 @@ bookSchema.index({ createdBy: 1, category: 1 });
 
 const Book = mongoose.model('Book', bookSchema);
 
-module.exports = Book;
+let localStore;
+try {
+  localStore = require('../services/localStore');
+} catch (e) {
+  // Ignore if not present
+}
+
+const BookProxy = new Proxy(Book, {
+  get(target, prop) {
+    if (mongoose.connection && mongoose.connection.readyState === 1) {
+      return target[prop];
+    }
+    if (localStore && localStore.localBook && prop in localStore.localBook) {
+      return localStore.localBook[prop];
+    }
+    return target[prop];
+  },
+});
+
+module.exports = BookProxy;

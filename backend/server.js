@@ -113,33 +113,35 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-  console.error(
-    'FATAL ERROR: MONGODB_URI is not defined in the environment variables.'
-  );
-  process.exit(1);
-}
-
-mongoose
-  .connect(MONGODB_URI)
-  .then(() => {
-    console.log('✅  MongoDB connected successfully');
-
-    app.listen(PORT, () => {
-      console.log(
-        `🚀  Server is running on port ${PORT} — http://localhost:${PORT}`
-      );
-      console.log(`📚  Book Library Management API ready`);
-      console.log(
-        `🌐  Accepting requests from: ${
-          process.env.FRONTEND_URL || 'http://localhost:5173'
-        }`
-      );
-    });
-  })
-  .catch((err) => {
-    console.error('❌  MongoDB connection error:', err.message);
-    process.exit(1);
+const startServer = () => {
+  app.listen(PORT, () => {
+    console.log(`🚀  Server is running on port ${PORT} — http://localhost:${PORT}`);
+    console.log(`📚  Book Library Management API ready`);
+    console.log(`🌐  Accepting requests from: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
   });
+};
+
+const hasValidMongoUri =
+  MONGODB_URI &&
+  (MONGODB_URI.startsWith('mongodb://') || MONGODB_URI.startsWith('mongodb+srv://'));
+
+if (hasValidMongoUri) {
+  mongoose
+    .connect(MONGODB_URI)
+    .then(() => {
+      console.log('✅  MongoDB Atlas connected successfully via Mongoose');
+      startServer();
+    })
+    .catch((err) => {
+      console.warn('⚠️  Could not connect to MongoDB Atlas:', err.message);
+      console.log('🔄  Falling back to Local Storage mode (backend/data/local_db.json)');
+      startServer();
+    });
+} else {
+  console.log('ℹ️   MONGODB_URI not configured with MongoDB Atlas credentials.');
+  console.log('📁  Running in Local Storage mode (backend/data/local_db.json)');
+  console.log('💡  To connect MongoDB Atlas: set MONGODB_URI in backend/.env');
+  startServer();
+}
 
 module.exports = app;
