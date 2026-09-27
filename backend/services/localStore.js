@@ -195,7 +195,71 @@ const localBook = {
       },
     };
 
-    return chainable;
+  findById(id) {
+    const data = readData();
+    const strId = id ? id.toString() : '';
+    const index = data.books.findIndex((b) => b._id === strId);
+    const raw = index !== -1 ? data.books[index] : null;
+
+    if (!raw) {
+      const emptyQuery = {
+        lean() {
+          return Promise.resolve(null);
+        },
+        then(resolve, reject) {
+          return Promise.resolve(null).then(resolve, reject);
+        },
+        catch(reject) {
+          return Promise.resolve(null).catch(reject);
+        },
+      };
+      return emptyQuery;
+    }
+
+    const doc = {
+      ...raw,
+      async save() {
+        const currentData = readData();
+        const idx = currentData.books.findIndex((b) => b._id === this._id);
+        if (idx !== -1) {
+          currentData.books[idx] = {
+            ...currentData.books[idx],
+            title: this.title !== undefined ? this.title : currentData.books[idx].title,
+            author: this.author !== undefined ? this.author : currentData.books[idx].author,
+            category: this.category !== undefined ? this.category : currentData.books[idx].category,
+            status: this.status !== undefined ? this.status : currentData.books[idx].status,
+            createdBy: this.createdBy !== undefined ? this.createdBy : currentData.books[idx].createdBy,
+            updatedAt: new Date().toISOString(),
+          };
+          writeData(currentData);
+          return { ...currentData.books[idx] };
+        }
+        return this;
+      },
+      async deleteOne() {
+        const currentData = readData();
+        const idx = currentData.books.findIndex((b) => b._id === this._id);
+        if (idx !== -1) {
+          currentData.books.splice(idx, 1);
+          writeData(currentData);
+        }
+        return { acknowledged: true, deletedCount: 1 };
+      },
+    };
+
+    const queryObj = {
+      lean() {
+        return Promise.resolve({ ...raw });
+      },
+      then(resolve, reject) {
+        return Promise.resolve(doc).then(resolve, reject);
+      },
+      catch(reject) {
+        return Promise.resolve(doc).catch(reject);
+      },
+    };
+
+    return queryObj;
   },
 
   async findOne(query = {}) {

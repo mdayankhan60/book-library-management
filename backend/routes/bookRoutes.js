@@ -129,7 +129,12 @@ router.get('/:id', async (req, res) => {
     }
 
     // Ownership check
-    if (book.createdBy.toString() !== req.user._id.toString()) {
+    const isOwner =
+      !book.createdBy ||
+      book.createdBy === 'all' ||
+      book.createdBy.toString() === req.user._id.toString();
+
+    if (!isOwner) {
       return res.status(403).json({
         success: false,
         message: 'Access denied. You do not own this book.',
@@ -357,7 +362,12 @@ router.put('/:id', async (req, res) => {
     }
 
     // Ownership check
-    if (book.createdBy.toString() !== req.user._id.toString()) {
+    const isOwner =
+      !book.createdBy ||
+      book.createdBy === 'all' ||
+      book.createdBy.toString() === req.user._id.toString();
+
+    if (!isOwner) {
       return res.status(403).json({
         success: false,
         message: 'Access denied. You do not own this book.',
@@ -369,6 +379,7 @@ router.put('/:id', async (req, res) => {
     if (author !== undefined) book.author = author.trim();
     if (category !== undefined) book.category = category.trim();
     if (status !== undefined) book.status = status;
+    if (book.createdBy === 'all') book.createdBy = req.user._id;
 
     const updatedBook = await book.save();
 
@@ -427,7 +438,12 @@ router.delete('/:id', async (req, res) => {
     }
 
     // Ownership check
-    if (book.createdBy.toString() !== req.user._id.toString()) {
+    const isOwner =
+      !book.createdBy ||
+      book.createdBy === 'all' ||
+      book.createdBy.toString() === req.user._id.toString();
+
+    if (!isOwner) {
       return res.status(403).json({
         success: false,
         message: 'Access denied. You do not own this book.',

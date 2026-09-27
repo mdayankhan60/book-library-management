@@ -77,13 +77,14 @@ function BooksPage() {
   const handleToggleStatus = async (book) => {
     const newStatus = book.status === 'Available' ? 'Issued' : 'Available'
     try {
-      await updateBook(book._id, { ...book, status: newStatus })
+      await updateBook(book._id, { status: newStatus })
       setBooks((prev) =>
         prev.map((b) => (b._id === book._id ? { ...b, status: newStatus } : b))
       )
       addToast(`"${book.title}" marked as ${newStatus}.`, 'success')
-    } catch {
-      addToast('Failed to update book status.', 'error')
+    } catch (err) {
+      const msg = err?.response?.data?.message || 'Failed to update book status.'
+      addToast(msg, 'error')
     }
   }
 
